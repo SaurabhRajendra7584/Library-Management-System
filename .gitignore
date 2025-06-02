@@ -1,0 +1,28 @@
+"venv/__pycache__/*.py[cod]*$py.class**/migrations/db.sqlite3staticfiles/media/.idea/.env.DS_StoreThumbs.db" 
+# Virtual environment
+venv/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django migrations
+**/migrations/
+
+# SQLite database
+db.sqlite3
+
+# Django static files
+staticfiles/
+media/
+
+# PyCharm project files
+.idea/
+
+# Environment variables
+.env
+
+# OS-specific files
+.DS_Store
+Thumbs.db

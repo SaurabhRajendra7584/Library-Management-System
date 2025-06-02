@@ -1,0 +1,895 @@
+{% load static%}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- ====================================================================
+         META TAGS & DOCUMENT SETUP
+         ==================================================================== -->
+
+    <!-- Character encoding for proper text display -->
+    <meta charset="UTF-8">
+
+    <!-- Responsive viewport meta tag for mobile-first design -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Page title displayed in browser tab -->
+    <title>Login & Signup - SR Library</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Access your SR Library account - Login or create a new account to manage your library experience.">
+    <meta name="keywords" content="library login, library signup, SR Library account, library management access">
+    <meta name="author" content="SR Library Team">
+
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon-16x16.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="192x192" href="{% static 'images/android-chrome-192x192.png' %}">
+    <link rel="icon" type="image/png" sizes="512x512" href="{% static 'images/android-chrome-512x512.png' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/apple-touch-icon.png' %}">
+
+    <!-- Font Awesome Icons for form elements and visual enhancements -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        /* ====================================================================
+           CSS RESET & GLOBAL STYLES
+           ==================================================================== */
+
+        /* Universal box-sizing and reset margins/padding for consistent layout */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Base body styling with modern font stack and gradient background */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* Background texture overlay for visual depth */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.05)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.05)"/><circle cx="75" cy="25" r="1" fill="rgba(255,255,255,0.05)"/><circle cx="25" cy="75" r="1" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* ====================================================================
+           MAIN CONTAINER STYLES
+           ==================================================================== */
+
+        /* Main authentication container with glassmorphism effect */
+        .auth-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            padding: 0;
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* Animated background elements for visual interest */
+        .auth-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(37, 99, 235, 0.05), transparent);
+            animation: rotate 20s linear infinite;
+            pointer-events: none;
+        }
+
+        /* Keyframe animation for rotating background element */
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ====================================================================
+           HEADER STYLES
+           ==================================================================== */
+
+        /* Header section with branding and navigation */
+        .auth-header {
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Logo styling in header */
+        .auth-header .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        /* Header title styling */
+        .auth-header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        /* Header subtitle/description */
+        .auth-header p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+        /* ====================================================================
+           FORM CONTAINER STYLES
+           ==================================================================== */
+
+        /* Main form container with padding and positioning */
+        .form-container {
+            padding: 2.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Form toggle buttons container */
+        .form-toggle {
+            display: flex;
+            background: #f1f5f9;
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        /* Individual toggle button styling */
+        .toggle-btn {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            background: transparent;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Active toggle button styling */
+        .toggle-btn.active {
+            background: white;
+            color: #2563eb;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* ====================================================================
+           FORM STYLES
+           ==================================================================== */
+
+        /* Base form styling */
+        .auth-form {
+            display: none;
+            animation: slideIn 0.5s ease forwards;
+        }
+
+        /* Active form display */
+        .auth-form.active {
+            display: block;
+        }
+
+        /* Slide in animation for form transitions */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Form group container for input fields */
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        /* Form labels styling */
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.9rem;
+        }
+
+        /* Input wrapper for icon positioning */
+        .input-wrapper {
+            position: relative;
+        }
+
+        /* Base input field styling */
+        .form-control {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f9fafb;
+        }
+
+        /* Input focus state styling */
+        .form-control:focus {
+            outline: none;
+            border-color: #2563eb;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        /* Input icons positioning */
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            transition: color 0.3s ease;
+        }
+
+        /* Input icon color change on focus */
+        .form-control:focus + .input-icon {
+            color: #2563eb;
+        }
+
+        /* ====================================================================
+           BUTTON STYLES
+           ==================================================================== */
+
+        /* Primary button styling with gradient background */
+        .btn-primary {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Primary button hover effects */
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #1d4ed8, #2563eb);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
+        }
+
+        /* Button loading state */
+        .btn-primary:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ====================================================================
+           ADDITIONAL FORM ELEMENTS
+           ==================================================================== */
+
+        /* Remember me checkbox container */
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Custom checkbox styling */
+        .custom-checkbox {
+            position: relative;
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Hidden default checkbox */
+        .custom-checkbox input {
+            opacity: 0;
+            position: absolute;
+        }
+
+        /* Custom checkbox visual element */
+        .checkmark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 20px;
+            width: 20px;
+            background: #f3f4f6;
+            border: 2px solid #d1d5db;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        /* Checkbox checked state */
+        .custom-checkbox input:checked ~ .checkmark {
+            background: #2563eb;
+            border-color: #2563eb;
+        }
+
+        /* Checkbox checkmark icon */
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+            left: 6px;
+            top: 2px;
+            width: 6px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        /* Show checkmark when checked */
+        .custom-checkbox input:checked ~ .checkmark:after {
+            display: block;
+        }
+
+        /* Divider styling for social login section */
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+            color: #9ca3af;
+            font-size: 0.9rem;
+        }
+
+        /* Divider line elements */
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e5e7eb;
+        }
+
+        /* Divider text spacing */
+        .divider span {
+            padding: 0 1rem;
+        }
+
+        /* ====================================================================
+           SOCIAL LOGIN BUTTONS
+           ==================================================================== */
+
+        /* Social login buttons container */
+        .social-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Individual social button styling */
+        .social-btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            text-decoration: none;
+            color: #374151;
+        }
+
+        /* Social button hover effects */
+        .social-btn:hover {
+            background: #f9fafb;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Google button specific styling */
+        .social-btn.google:hover {
+            border-color: #4285f4;
+            color: #4285f4;
+        }
+
+        /* Facebook button specific styling */
+        .social-btn.facebook:hover {
+            border-color: #1877f2;
+            color: #1877f2;
+        }
+
+        /* ====================================================================
+           FOOTER LINKS
+           ==================================================================== */
+
+        /* Footer text styling */
+        .auth-footer {
+            text-align: center;
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        /* Footer links styling */
+        .auth-footer a {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        /* Footer links hover effect */
+        .auth-footer a:hover {
+            color: #1d4ed8;
+            text-decoration: underline;
+        }
+
+        /* ====================================================================
+           ERROR AND SUCCESS MESSAGES
+           ==================================================================== */
+
+        /* Alert message container */
+        .alert {
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+        }
+
+        /* Success alert styling */
+        .alert.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        /* Error alert styling */
+        .alert.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
+        /* Show alert when active */
+        .alert.show {
+            display: flex;
+        }
+
+        /* ====================================================================
+           RESPONSIVE DESIGN
+           ==================================================================== */
+
+        /* Tablet and mobile responsive styles */
+        @media (max-width: 768px) {
+            /* Adjust container padding on smaller screens */
+            .auth-container {
+                margin: 10px;
+                max-width: 100%;
+            }
+
+            /* Reduce header padding on mobile */
+            .auth-header {
+                padding: 1.5rem;
+            }
+
+            /* Adjust header logo size */
+            .auth-header .logo {
+                font-size: 1.5rem;
+            }
+
+            /* Reduce form container padding */
+            .form-container {
+                padding: 2rem 1.5rem;
+            }
+
+            /* Stack social buttons vertically on small screens */
+            .social-buttons {
+                flex-direction: column;
+            }
+
+            /* Adjust input padding for smaller screens */
+            .form-control {
+                padding: 0.875rem 0.875rem 0.875rem 2.75rem;
+            }
+
+            /* Adjust input icon positioning */
+            .input-icon {
+                left: 0.875rem;
+            }
+        }
+
+        /* Small mobile devices */
+        @media (max-width: 480px) {
+            /* Further reduce padding on very small screens */
+            .form-container {
+                padding: 1.5rem 1rem;
+            }
+
+            /* Reduce header padding */
+            .auth-header {
+                padding: 1.25rem;
+            }
+
+            /* Smaller header title */
+            .auth-header h1 {
+                font-size: 1.25rem;
+            }
+
+            /* Adjust body padding */
+            body {
+                padding: 10px;
+            }
+        }
+
+        /* ====================================================================
+           LOADING ANIMATION
+           ==================================================================== */
+
+        /* Loading spinner animation */
+        .loading-spinner {
+            border: 2px solid transparent;
+            border-top: 2px solid #ffffff;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+
+        /* Spinning animation keyframes */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Show spinner when loading */
+        .btn-primary.loading .loading-spinner {
+            display: inline-block;
+        }
+
+        /* Hide button text when loading */
+        .btn-primary.loading .btn-text {
+            display: none;
+        }
+
+        /* ====================================================================
+           BACK TO HOME LINK
+           ==================================================================== */
+
+        /* Back to home button styling */
+        .back-home {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            text-decoration: none;
+            color: #2563eb;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        /* Back to home hover effect */
+        .back-home:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            color: #1d4ed8;
+        }
+
+        /* Hide back button on very small screens */
+        @media (max-width: 480px) {
+            .back-home {
+                position: relative;
+                top: auto;
+                left: auto;
+                margin-bottom: 1rem;
+                align-self: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+<!--    &lt;!&ndash; Back to Home Link &ndash;&gt;-->
+<!--    <a href="index.html" class="back-home">-->
+<!--        <i class="fas fa-arrow-left"></i>-->
+<!--        Back to Home-->
+<!--    </a>-->
+
+    <!-- Main Authentication Container -->
+    <div class="auth-container">
+        <!-- Header Section with Branding -->
+        <div class="auth-header">
+            <div class="logo">
+                <i class="fas fa-book-open"></i>
+                SR Library
+            </div>
+            <h1>Welcome here!</h1>
+            <p>Access your library account to explore endless readings</p>
+        </div>
+
+        <!-- Form Container -->
+        <div class="form-container">
+            <!-- Alert Messages -->
+            <div class="alert success" id="successAlert">
+                <i class="fas fa-check-circle"></i>
+                <span id="successMessage"></span>
+            </div>
+
+            <div class="alert error" id="errorAlert">
+                <i class="fas fa-exclamation-circle"></i>
+                <span id="errorMessage"></span>
+            </div>
+
+            <!-- Form Toggle Buttons -->
+            <div class="form-toggle">
+                <button class="toggle-btn active" id="loginToggle">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Login
+                </button>
+                <button class="toggle-btn" id="signupToggle">
+                    <i class="fas fa-user-plus"></i>
+                    Sign Up
+                </button>
+            </div>
+
+            <!-- Login Form -->
+            <form class="auth-form active" id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">Email Address</label>
+                    <div class="input-wrapper">
+                        <input type="text" class="form-control" id="loginEmail" name="email" required>
+                        <i class="fas fa-envelope input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <div class="input-wrapper">
+                        <input type="password" class="form-control" id="loginPassword" name="password" required>
+                        <i class="fas fa-lock input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="checkbox-group">
+                    <label class="custom-checkbox">
+                        <input type="checkbox" name="remember">
+                        <span class="checkmark"></span>
+                    </label>
+                    <span>Remember me</span>
+                </div>
+
+                <button type="submit" class="btn-primary" id="loginBtn">
+                    <span class="btn-text">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Login
+                    </span>
+                    <a href="home.html" type=""></a>
+                    <div class="loading-spinner"></div>
+                </button>
+
+                <div class="auth-footer">
+                    <a href="#" id="forgotPassword">Forgot your password?</a>
+                </div>
+            </form>
+
+            <!-- Signup Form -->
+            <form class="auth-form" id="signupForm">
+                <div class="form-group">
+                    <label for="signupName">Full Name</label>
+                    <div class="input-wrapper">
+                        <input type="text" class="form-control" id="signupName" name="name" required>
+                        <i class="fas fa-user input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="signupEmail">Email Address</label>
+                    <div class="input-wrapper">
+                        <input type="email" class="form-control" id="signupEmail" name="email" required>
+                        <i class="fas fa-envelope input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="signupPassword">Password</label>
+                    <div class="input-wrapper">
+                        <input type="password" class="form-control" id="signupPassword" name="password" required minlength="8">
+                        <i class="fas fa-lock input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <div class="input-wrapper">
+                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                        <i class="fas fa-lock input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="checkbox-group">
+                    <label class="custom-checkbox">
+                        <input type="checkbox" name="terms" required>
+                        <span class="checkmark"></span>
+                    </label>
+                    <span>I agree to the <a href="#" style="color: #2563eb;">Terms of Service</a> and <a href="#" style="color: #2563eb;">Privacy Policy</a></span>
+                </div>
+
+                <button type="submit" class="btn-primary" id="signupBtn">
+                    <span class="btn-text">
+                        <i class="fas fa-user-plus"></i>
+                        Create Account
+                    </span>
+                    <div class="loading-spinner"></div>
+                </button>
+
+                <div class="auth-footer">
+                    Already have an account? <a href="#" id="switchToLogin">Sign in here</a>
+                </div>
+            </form>
+
+            <!-- Social Login Section -->
+            <div class="divider">
+                <span>Or continue with</span>
+            </div>
+
+            <div class="social-buttons">
+                <a href="#" class="social-btn google" id="googleLogin">
+                    <i class="fab fa-google"></i>
+                    Google
+                </a>
+                <a href="#" class="social-btn facebook" id="facebookLogin">
+                    <i class="fab fa-facebook-f"></i>
+                    Facebook
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ====================================================================
+        // AUTHENTICATION FORM JAVASCRIPT
+        // ====================================================================
+
+        // DOM Elements Selection
+        const loginToggle = document.getElementById('loginToggle');
+        const signupToggle = document.getElementById('signupToggle');
+        const loginForm = document.getElementById('loginForm');
+        const signupForm = document.getElementById('signupForm');
+        const switchToLogin = document.getElementById('switchToLogin');
+        const forgotPassword = document.getElementById('forgotPassword');
+        const successAlert = document.getElementById('successAlert');
+        const errorAlert = document.getElementById('errorAlert');
+        const successMessage = document.getElementById('successMessage');
+        const errorMessage = document.getElementById('errorMessage');
+
+        // ====================================================================
+        // FORM TOGGLE FUNCTIONALITY
+        // ====================================================================
+
+        /**
+         * Switch between login and signup forms
+         * @param {string} formType - 'login' or 'signup'
+         */
+        function switchForm(formType) {
+            // Hide all alerts when switching forms
+            hideAlerts();
+
+            if (formType === 'login') {
+                // Activate login form
+                loginToggle.classList.add('active');
+                signupToggle.classList.remove('active');
+                loginForm.classList.add('active');
+                signupForm.classList.remove('active');
+
+                // Update header text
+                document.querySelector('.auth-header h1').textContent = 'Welcome Back';
+                document.querySelector('.auth-header p').textContent = 'Access your library account to explore endless possibilities';
+            } else {
+                // Activate signup form
+                signupToggle.classList.add('active');
+                loginToggle.classList.remove('active');
+                signupForm.classList.add('active');
+                loginForm.classList.remove('active');
+
+                // Update header text
+                document.querySelector('.auth-header h1').textContent = 'Join SR Library';
+                document.querySelector('.auth-header p').textContent = 'Create your account and start your learning journey today';
+            }
+        }
+
+        // Event listeners for form toggle buttons
+        loginToggle.addEventListener('click', () => switchForm('login'));
+        signupToggle.addEventListener('click', () => switchForm('signup'));
+        switchToLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            switchForm('login');
+        });
+
+        // ====================================================================
+        // ALERT SYSTEM
+        // ====================================================================
+
+        /**
+         * Show success alert with message
+         * @param {string} message - Success message to display
+         */
+        function showSuccessAlert(message) {
+            hideAlerts();
+            successMessage.textContent = message;
+            successAlert.classList.add('show');
+
+            // Auto-hide after 5 seconds
+            setTimeout(hideAlerts, 5000);
+        }
+
+        /**
+         * Show error alert with message
+         * @param {string} message - Error message to display
+         */
+        function showErrorAlert(message) {
+            hideAlerts();
+            errorMessage.textContent = message;
+            errorAlert.classList.add('show');
+
+            // Auto-hide after 5 seconds
+            setTimeout(hideAlerts, 5000);
+        }
+
+        /**
+         * Hide all alert messages
+         */
+        function hideAlerts()

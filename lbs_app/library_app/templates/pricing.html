@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pricing | Library Management</title>
+  <link rel="stylesheet" href="{% static 'library_app/css/pricing.css' %}">
+</head>
+<body>
+
+<header>
+  <h1>Library Pricing Plans</h1>
+  <p>Choose a plan that fits your needs. Upgrade anytime.</p>
+</header>
+
+<section class="pricing-container">
+  {% for plan in plans %}
+  <div class="pricing-card">
+    <h2>{{ plan.name }}</h2>
+    <p class="price">
+      {% if plan.price %}
+        ${{ plan.price }}<span style="font-size:0.8rem;">/month</span>
+      {% else %}
+        Contact Us
+      {% endif %}
+    </p>
+    <ul>
+      {% for feature in plan.features %}
+      <li>{{ feature }}</li>
+      {% endfor %}
+    </ul>
+    <button>
+      {% if plan.contact %}
+        Contact Sales
+      {% else %}
+        Select Plan
+      {% endif %}
+    </button>
+  </div>
+  {% endfor %}
+</section>
+
+<footer>
+  &copy; 2025 Library Management System. All rights reserved.
+</footer>
+
+</body>
+</html>
